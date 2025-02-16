@@ -26,13 +26,13 @@ model Product {
 
 model DayPart {
   id        Int     @default(autoincrement()) @id
-  alias     DayPartElias
+  alias     DayPartAlias @unique
   products  DayPartsOnProducts[]
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @updatedAt @db.Timestamp(6)
 }
 
-enum DayPartElias {
+enum DayPartAlias {
   MORNING
   AFTERNOON
   EVENING

@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "DayPartElias" AS ENUM ('MORNING', 'AFTERNOON', 'EVENING');
+CREATE TYPE "DayPartAlias" AS ENUM ('MORNING', 'AFTERNOON', 'EVENING');
 
 -- CreateTable
 CREATE TABLE "Product" (
@@ -16,7 +16,7 @@ CREATE TABLE "Product" (
 -- CreateTable
 CREATE TABLE "DayPart" (
     "id" SERIAL NOT NULL,
-    "alias" "DayPartElias" NOT NULL,
+    "alias" "DayPartAlias" NOT NULL,
     "createdAt" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(6) NOT NULL,
 
@@ -45,6 +45,9 @@ CREATE TABLE "Brand" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Product_name_key" ON "Product"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "DayPart_alias_key" ON "DayPart"("alias");
 
 -- AddForeignKey
 ALTER TABLE "Product" ADD CONSTRAINT "Product_brandId_fkey" FOREIGN KEY ("brandId") REFERENCES "Brand"("id") ON DELETE SET NULL ON UPDATE CASCADE;
