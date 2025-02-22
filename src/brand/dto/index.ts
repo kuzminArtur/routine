@@ -1,2 +1,3 @@
-export * from './CreateBrandDto';
-export * from './UpdateBrandDto';
+export * from './BrandDto';
+export * from './BrandCreateDto';
+export * from './BrandUpdateDto';

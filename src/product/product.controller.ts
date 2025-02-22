@@ -11,7 +11,7 @@ import {
 import { ProductService } from './product.service';
 import { Product } from '@prisma/client';
 import { ApiBody } from '@nestjs/swagger';
-import { CreateProductDto, UpdateProductDto } from './dto';
+import { ProductCreateDto, ProductUpdateDto } from './dto';
 
 @Controller('product')
 export class ProductController {
@@ -29,17 +29,17 @@ export class ProductController {
     return this.productService.findProducts();
   }
 
-  @Post('create')
-  @ApiBody({ type: CreateProductDto })
-  async createProduct(@Body() dto: CreateProductDto): Promise<Product> {
+  @Post()
+  @ApiBody({ type: ProductCreateDto })
+  async createProduct(@Body() dto: ProductCreateDto): Promise<Product> {
     return this.productService.createProduct(dto);
   }
 
   @Put(':id')
-  @ApiBody({ type: UpdateProductDto })
+  @ApiBody({ type: ProductUpdateDto })
   async updateProduct(
     @Param('id', new ParseIntPipe()) id: number,
-    @Body() dto: UpdateProductDto,
+    @Body() dto: ProductUpdateDto,
   ): Promise<Product> {
     return this.productService.updateProduct({ id }, dto);
   }

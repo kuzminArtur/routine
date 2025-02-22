@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { BrandService } from './brand.service';
 import { Brand } from '@prisma/client';
-import { CreateBrandDto, UpdateBrandDto } from './dto';
+import { BrandCreateDto, BrandUpdateDto } from './dto';
 import { ApiBody } from '@nestjs/swagger';
 
 @Controller('brand')
@@ -29,17 +29,17 @@ export class BrandController {
     return this.brandService.findBrands();
   }
 
-  @Post('create')
-  @ApiBody({ type: CreateBrandDto })
-  async createBrand(@Body() dto: CreateBrandDto): Promise<Brand> {
+  @Post()
+  @ApiBody({ type: BrandCreateDto })
+  async createBrand(@Body() dto: BrandCreateDto): Promise<Brand> {
     return this.brandService.createBrand(dto);
   }
 
   @Put(':id')
-  @ApiBody({ type: UpdateBrandDto })
+  @ApiBody({ type: BrandUpdateDto })
   async updateBrand(
     @Param('id', new ParseIntPipe()) id: number,
-    @Body() dto: UpdateBrandDto,
+    @Body() dto: BrandUpdateDto,
   ): Promise<Brand> {
     return this.brandService.updateBrand({ id }, dto);
   }

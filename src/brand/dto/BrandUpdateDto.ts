@@ -1,7 +1,7 @@
 import { PartialType } from '@nestjs/swagger';
-import { CreateProductDto } from './CreateProductDto';
+import { BrandCreateDto } from './BrandCreateDto';
 import { Prisma } from '@prisma/client';
 
-export class UpdateProductDto
-  extends PartialType(CreateProductDto)
+export class BrandUpdateDto
+  extends PartialType(BrandCreateDto)
   implements Prisma.BrandUpdateInput {}

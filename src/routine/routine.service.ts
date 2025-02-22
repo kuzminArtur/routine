@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
-import { DayPart } from '@prisma/client';
+import { DayPart, Prisma } from '@prisma/client';
 
 @Injectable()
 export class RoutineService {
@@ -19,7 +19,7 @@ export class RoutineService {
     });
   }
 
-  async getDayParts(): Promise<DayPart[]> {
-    return this.prisma.dayPart.findMany();
+  async getDayParts(where?: Prisma.DayPartWhereInput): Promise<DayPart[]> {
+    return this.prisma.dayPart.findMany({ where });
   }
 }
