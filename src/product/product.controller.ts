@@ -2,52 +2,56 @@ import {
   Body,
   Controller,
   Delete,
-  Get,
+  Get, HttpStatus,
   Param,
   ParseIntPipe,
   Post,
   Put,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { Product } from '@prisma/client';
-import { ApiBody } from '@nestjs/swagger';
-import { ProductCreateDto, ProductUpdateDto } from './dto';
+import { ApiBody, ApiResponse } from '@nestjs/swagger';
+import { ProductCreateDto, ProductDto, ProductUpdateDto } from './dto';
 
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Get(':id')
+  @ApiResponse({ type: ProductDto, status: HttpStatus.OK })
   async getProduct(
     @Param('id', new ParseIntPipe()) id: number,
-  ): Promise<Product | null> {
+  ): Promise<ProductDto | null> {
     return this.productService.getProduct({ id });
   }
 
   @Get()
-  async getProducts(): Promise<Product[]> {
+  @ApiResponse({ type: ProductDto, isArray: true, status: HttpStatus.OK })
+  async getProducts(): Promise<ProductDto[]> {
     return this.productService.findProducts();
   }
 
   @Post()
+  @ApiResponse({ type: ProductDto, status: HttpStatus.CREATED })
   @ApiBody({ type: ProductCreateDto })
-  async createProduct(@Body() dto: ProductCreateDto): Promise<Product> {
+  async createProduct(@Body() dto: ProductCreateDto): Promise<ProductDto> {
     return this.productService.createProduct(dto);
   }
 
   @Put(':id')
   @ApiBody({ type: ProductUpdateDto })
+  @ApiResponse({ type: ProductDto, status: HttpStatus.OK })
   async updateProduct(
     @Param('id', new ParseIntPipe()) id: number,
     @Body() dto: ProductUpdateDto,
-  ): Promise<Product> {
+  ): Promise<ProductDto> {
     return this.productService.updateProduct({ id }, dto);
   }
 
   @Delete(':id')
+  @ApiResponse({ type: ProductDto, status: HttpStatus.OK })
   async deleteProduct(
     @Param('id', new ParseIntPipe()) id: number,
-  ): Promise<Product> {
+  ): Promise<ProductDto> {
     return this.productService.deleteProduct({ id });
   }
 }

@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { Product, Prisma } from '@prisma/client';
-import { RoutineService } from '../routine/routine.service';
 import { ProductCreateDto, ProductUpdateDto } from './dto';
 
 @Injectable()
 export class ProductService {
+  constructor(private prisma: PrismaService) {}
   private include: Prisma.ProductInclude = {
     brand: {
       select: {
@@ -24,10 +24,6 @@ export class ProductService {
       },
     },
   };
-  constructor(
-    private prisma: PrismaService,
-    private routineService: RoutineService,
-  ) {}
 
   async createProduct(dto: ProductCreateDto): Promise<Product> {
     const { brand, dayParts, ...data } = dto;
@@ -40,11 +36,8 @@ export class ProductService {
         }
       : undefined;
 
-    return this.prisma.product.create({
-      data: {
-        ...data,
-        brand: brandConnect,
-        dayParts: {
+    const dayPartsConnect = dayParts?.length
+      ? {
           create: dayParts.map((dayPart) => ({
             dayPart: {
               connect: {
@@ -52,10 +45,18 @@ export class ProductService {
               },
             },
           })),
-        },
+        }
+      : undefined;
+
+    const result = await this.prisma.product.create({
+      data: {
+        ...data,
+        brand: brandConnect,
+        dayParts: dayPartsConnect,
       },
       include: this.include,
     });
+    return result;
   }
 
   async deleteProduct(where: Prisma.ProductWhereUniqueInput): Promise<Product> {
@@ -66,8 +67,9 @@ export class ProductService {
     where: Prisma.ProductWhereUniqueInput,
     dto: ProductUpdateDto,
   ): Promise<Product> {
+    const { brand, dayParts, ...data } = dto;
     return this.prisma.product.update({
-      data: {},
+      data,
       where,
     });
   }
@@ -81,4 +83,10 @@ export class ProductService {
   async findProducts(where?: Prisma.ProductWhereInput): Promise<Product[]> {
     return this.prisma.product.findMany({ where, include: this.include });
   }
+
+  // private excludeMiddleTable<
+  //   T extends Product & { dayParts: DayPartsOnProducts[] },
+  // >(requestData: T) {
+  //   return { ...requestData, dayParts: requestData.dayParts?.map((dayPart) => dayPart.) };
+  // }
 }

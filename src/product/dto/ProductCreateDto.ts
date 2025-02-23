@@ -6,7 +6,7 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
-import { ApiProperty, PickType } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, PickType } from '@nestjs/swagger';
 import { DayPart, Prisma } from '@prisma/client';
 import { BrandCreateDto, BrandDto } from '../../brand/dto';
 import { Type } from 'class-transformer';
@@ -25,13 +25,13 @@ export class ProductCreateDto {
   @IsOptional()
   @Type(() => PickType(BrandDto, ['id']))
   @ValidateNested()
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional({ type: PickType(BrandDto, ['id']) })
   brand?: Pick<BrandDto, 'id'>;
 
   @IsArray()
   @IsOptional()
   @Type(() => PickType(DayPartDto, ['id']))
   @ValidateNested({ each: true })
-  // @ApiProperty({ type: 'integer', isArray: true, required: false })
-  dayParts: Pick<DayPartDto, 'id'>[];
+  @ApiPropertyOptional({ type: PickType(DayPartDto, ['id']), isArray: true })
+  dayParts?: Pick<DayPartDto, 'id'>[];
 }

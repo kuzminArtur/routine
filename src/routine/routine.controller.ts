@@ -1,18 +1,22 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, HttpStatus } from '@nestjs/common';
 import { RoutineService } from './routine.service';
-import { DayPart } from '@prisma/client';
+import { DayPartDto, RoutineDto } from './dto';
+import { ApiResponse } from '@nestjs/swagger';
 
 @Controller()
 export class RoutineController {
   constructor(private readonly routinesService: RoutineService) {}
 
   @Get('routine')
-  async getRoutines(): Promise<DayPart[]> {
+  @ApiResponse({ type: DayPartDto, isArray: true, status: HttpStatus.OK })
+  async getRoutines(): Promise<RoutineDto[]> {
+    // @ts-expect-error убрать после проверки api
     return this.routinesService.getRoutines();
   }
 
   @Get('day-parts')
-  async getDayParts(): Promise<DayPart[]> {
+  @ApiResponse({ type: DayPartDto, isArray: true, status: HttpStatus.OK })
+  async getDayParts(): Promise<DayPartDto[]> {
     return this.routinesService.getDayParts();
   }
 }

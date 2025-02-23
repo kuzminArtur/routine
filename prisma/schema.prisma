@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,45 +8,45 @@ datasource db {
 }
 
 model Product {
-  id        Int     @default(autoincrement()) @id
-  name      String  @unique
-  brand     Brand?  @relation(fields: [brandId], references: [id])
-  brandId   Int?
-  note      String?
-  dayParts  DayPartsOnProducts[]
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-  updatedAt DateTime @updatedAt @db.Timestamp(6)
+  id                 Int                  @id @default(autoincrement())
+  name               String               @unique
+  brandId            Int?
+  note               String?
+  createdAt          DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt          DateTime             @updatedAt @db.Timestamp(6)
+  DayPartsOnProducts DayPartsOnProducts[]
+  brand              Brand?               @relation(fields: [brandId], references: [id])
 }
 
 model DayPart {
-  id        Int     @default(autoincrement()) @id
-  alias     DayPartAlias @unique
-  products  DayPartsOnProducts[]
+  id                 Int                  @id @default(autoincrement())
+  alias              DayPartAlias         @unique
+  createdAt          DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt          DateTime             @updatedAt @db.Timestamp(6)
+  DayPartsOnProducts DayPartsOnProducts[]
+}
+
+model Brand {
+  id        Int       @id @default(autoincrement())
+  name      String
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt DateTime  @updatedAt @db.Timestamp(6)
+  products  Product[]
+}
+
+model DayPartsOnProducts {
+  productId Int
+  dayPartId Int
   createdAt DateTime @default(now()) @db.Timestamp(6)
-  updatedAt DateTime @updatedAt @db.Timestamp(6)
+  updatedAt DateTime @db.Timestamp(6)
+  DayPart   DayPart  @relation(fields: [dayPartId], references: [id])
+  Product   Product  @relation(fields: [productId], references: [id])
+
+  @@id([dayPartId, productId])
 }
 
 enum DayPartAlias {
   MORNING
   AFTERNOON
   EVENING
-}
-
-model DayPartsOnProducts {
-  product Product @relation(fields: [productId], references: [id])
-  productId    Int
-  dayPart      DayPart @relation(fields: [dayPartId], references: [id])
-  dayPartId    Int
-  createdAt    DateTime @default(now()) @db.Timestamp(6)
-  updatedAt    DateTime @updatedAt @db.Timestamp(6)
-
-  @@id([dayPartId, productId])
-}
-
-model Brand {
-  id        Int     @default(autoincrement()) @id
-  name      String
-  products  Product[]
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-  updatedAt DateTime @updatedAt @db.Timestamp(6)
 }

@@ -5,9 +5,13 @@ import { ApiProperty } from '@nestjs/swagger';
 export class DayPartDto implements DayPart {
   @IsInt()
   @Min(1)
-  @ApiProperty()
+  @ApiProperty({ type: 'integer' })
   id: number;
+
+  @ApiProperty()
   alias: $Enums.DayPartAlias;
+
   createdAt: Date;
+
   updatedAt: Date;
 }

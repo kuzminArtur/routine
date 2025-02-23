@@ -2,52 +2,56 @@ import {
   Body,
   Controller,
   Delete,
-  Get,
+  Get, HttpStatus,
   Param,
   ParseIntPipe,
   Post,
   Put,
 } from '@nestjs/common';
 import { BrandService } from './brand.service';
-import { Brand } from '@prisma/client';
-import { BrandCreateDto, BrandUpdateDto } from './dto';
-import { ApiBody } from '@nestjs/swagger';
+import { BrandCreateDto, BrandDto, BrandUpdateDto } from './dto';
+import { ApiBody, ApiResponse } from '@nestjs/swagger';
 
 @Controller('brand')
 export class BrandController {
   constructor(private readonly brandService: BrandService) {}
 
   @Get(':id')
+  @ApiResponse({ type: BrandDto, status: HttpStatus.OK })
   async getBrand(
     @Param('id', new ParseIntPipe()) id: number,
-  ): Promise<Brand | null> {
+  ): Promise<BrandDto | null> {
     return this.brandService.getBrand({ id });
   }
 
   @Get()
-  async getBrands(): Promise<Brand[]> {
+  @ApiResponse({ type: BrandDto, isArray: true, status: HttpStatus.OK })
+  async getBrands(): Promise<BrandDto[]> {
     return this.brandService.findBrands();
   }
 
   @Post()
   @ApiBody({ type: BrandCreateDto })
-  async createBrand(@Body() dto: BrandCreateDto): Promise<Brand> {
+  @ApiResponse({ type: BrandDto, status: HttpStatus.CREATED })
+  async createBrand(@Body() dto: BrandCreateDto): Promise<BrandDto> {
     return this.brandService.createBrand(dto);
   }
 
   @Put(':id')
   @ApiBody({ type: BrandUpdateDto })
+  @ApiResponse({ type: BrandDto, status: HttpStatus.OK })
   async updateBrand(
     @Param('id', new ParseIntPipe()) id: number,
     @Body() dto: BrandUpdateDto,
-  ): Promise<Brand> {
+  ): Promise<BrandDto> {
     return this.brandService.updateBrand({ id }, dto);
   }
 
   @Delete(':id')
+  @ApiResponse({ type: BrandDto, status: HttpStatus.OK })
   async deleteBrand(
     @Param('id', new ParseIntPipe()) id: number,
-  ): Promise<Brand> {
+  ): Promise<BrandDto> {
     return this.brandService.deleteBrand({ id });
   }
 }
