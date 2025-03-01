@@ -8,22 +8,23 @@ datasource db {
 }
 
 model Product {
-  id                 Int                  @id @default(autoincrement())
-  name               String               @unique
-  brandId            Int?
-  note               String?
-  createdAt          DateTime             @default(now()) @db.Timestamp(6)
-  updatedAt          DateTime             @updatedAt @db.Timestamp(6)
-  DayPartsOnProducts DayPartsOnProducts[]
-  brand              Brand?               @relation(fields: [brandId], references: [id])
+  id        Int                  @id @default(autoincrement())
+  name      String               @unique
+  brandId   Int?
+  note      String?
+  createdAt DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt DateTime             @updatedAt @db.Timestamp(6)
+  dayParts  DayPartsOnProducts[]
+  brand     Brand?               @relation(fields: [brandId], references: [id])
 }
 
 model DayPart {
-  id                 Int                  @id @default(autoincrement())
-  alias              DayPartAlias         @unique
-  createdAt          DateTime             @default(now()) @db.Timestamp(6)
-  updatedAt          DateTime             @updatedAt @db.Timestamp(6)
-  DayPartsOnProducts DayPartsOnProducts[]
+  id        Int                  @id @default(autoincrement())
+  alias     String               @unique
+  order     Int                  @default(0)
+  createdAt DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt DateTime             @updatedAt @db.Timestamp(6)
+  products  DayPartsOnProducts[]
 }
 
 model Brand {
@@ -37,16 +38,8 @@ model Brand {
 model DayPartsOnProducts {
   productId Int
   dayPartId Int
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-  updatedAt DateTime @db.Timestamp(6)
-  DayPart   DayPart  @relation(fields: [dayPartId], references: [id])
-  Product   Product  @relation(fields: [productId], references: [id])
+  dayPart   DayPart  @relation(fields: [dayPartId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
 
   @@id([dayPartId, productId])
-}
-
-enum DayPartAlias {
-  MORNING
-  AFTERNOON
-  EVENING
 }

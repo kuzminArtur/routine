@@ -13,16 +13,16 @@ export class ProductService {
         name: true,
       },
     },
-    dayParts: {
-      include: {
-        dayPart: {
-          select: {
-            id: true,
-            alias: true,
-          },
-        },
-      },
-    },
+    // dayParts: {
+    //   include: {
+    //     dayPart: {
+    //       select: {
+    //         id: true,
+    //         alias: true,
+    //       },
+    //     },
+    //   },
+    // },
   };
 
   async createProduct(dto: ProductCreateDto): Promise<Product> {

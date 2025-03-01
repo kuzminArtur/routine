@@ -1,5 +1,5 @@
-import { $Enums, DayPart } from '@prisma/client';
-import { IsInt, Min } from 'class-validator';
+import { DayPart } from '@prisma/client';
+import { IsInt, IsString, Min } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class DayPartDto implements DayPart {
@@ -9,7 +9,11 @@ export class DayPartDto implements DayPart {
   id: number;
 
   @ApiProperty()
-  alias: $Enums.DayPartAlias;
+  @IsString()
+  alias: string;
+
+  @IsInt()
+  order: number;
 
   createdAt: Date;
 

@@ -7,6 +7,7 @@ async function main() {
     update: {},
     create: {
       alias: 'MORNING',
+      order: 0,
     },
   });
   await prisma.dayPart.upsert({
@@ -14,6 +15,7 @@ async function main() {
     update: {},
     create: {
       alias: 'EVENING',
+      order: 2,
     },
   });
   await prisma.dayPart.upsert({
@@ -21,6 +23,7 @@ async function main() {
     update: {},
     create: {
       alias: 'AFTERNOON',
+      order: 1,
     },
   });
 }
