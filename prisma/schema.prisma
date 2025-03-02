@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,45 +8,29 @@ datasource db {
 }
 
 model Product {
-  id        Int     @default(autoincrement()) @id
-  name      String  @unique
-  brand     Brand?  @relation(fields: [brandId], references: [id])
+  id        Int                  @id @default(autoincrement())
+  name      String               @unique
   brandId   Int?
   note      String?
-  dayParts  DayPartsOnProducts[]
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-  updatedAt DateTime @updatedAt @db.Timestamp(6)
+  createdAt DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt DateTime             @updatedAt @db.Timestamp(6)
+  dayParts  DayPart[]
+  brand     Brand?               @relation(fields: [brandId], references: [id])
 }
 
 model DayPart {
-  id        Int     @default(autoincrement()) @id
-  alias     DayPartElias
-  products  DayPartsOnProducts[]
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-  updatedAt DateTime @updatedAt @db.Timestamp(6)
-}
-
-enum DayPartElias {
-  MORNING
-  AFTERNOON
-  EVENING
-}
-
-model DayPartsOnProducts {
-  product Product @relation(fields: [productId], references: [id])
-  productId    Int
-  dayPart      DayPart @relation(fields: [dayPartId], references: [id])
-  dayPartId    Int
-  createdAt    DateTime @default(now()) @db.Timestamp(6)
-  updatedAt    DateTime @updatedAt @db.Timestamp(6)
-
-  @@id([dayPartId, productId])
+  id        Int                  @id @default(autoincrement())
+  alias     String               @unique
+  order     Int                  @default(0)
+  createdAt DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt DateTime             @updatedAt @db.Timestamp(6)
+  products  Product[]
 }
 
 model Brand {
-  id        Int     @default(autoincrement()) @id
+  id        Int       @id @default(autoincrement())
   name      String
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt DateTime  @updatedAt @db.Timestamp(6)
   products  Product[]
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-  updatedAt DateTime @updatedAt @db.Timestamp(6)
 }

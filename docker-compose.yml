@@ -13,7 +13,8 @@ services:
       - DB_HOST=postgres
       - DB_PORT
     volumes:
-      - .:/usr/src/app:rw
+      - ./src:/usr/src/app/src:rw
+      - ./test:/usr/src/app/test:rw
     ports:
       - "3000:3000"
       - "9229:9229"
