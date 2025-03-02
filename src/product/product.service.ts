@@ -13,16 +13,13 @@ export class ProductService {
         name: true,
       },
     },
-    // dayParts: {
-    //   include: {
-    //     dayPart: {
-    //       select: {
-    //         id: true,
-    //         alias: true,
-    //       },
-    //     },
-    //   },
-    // },
+    dayParts: {
+      select: {
+        id: true,
+        alias: true,
+        order: true,
+      },
+    },
   };
 
   async createProduct(dto: ProductCreateDto): Promise<Product> {
@@ -38,12 +35,8 @@ export class ProductService {
 
     const dayPartsConnect = dayParts?.length
       ? {
-          create: dayParts.map((dayPart) => ({
-            dayPart: {
-              connect: {
-                id: dayPart.id,
-              },
-            },
+          connect: dayParts.map((dayPart) => ({
+            id: dayPart.id,
           })),
         }
       : undefined;
@@ -83,10 +76,4 @@ export class ProductService {
   async findProducts(where?: Prisma.ProductWhereInput): Promise<Product[]> {
     return this.prisma.product.findMany({ where, include: this.include });
   }
-
-  // private excludeMiddleTable<
-  //   T extends Product & { dayParts: DayPartsOnProducts[] },
-  // >(requestData: T) {
-  //   return { ...requestData, dayParts: requestData.dayParts?.map((dayPart) => dayPart.) };
-  // }
 }

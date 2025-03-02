@@ -6,7 +6,7 @@ import { AppModule } from '../src/app.module';
 import { Brand, DayPart, Product } from '@prisma/client';
 import { PrismaService } from '../src/prisma.service';
 import { BrandService } from '../src/brand/brand.service';
-import { ProductCreateDto } from '../src/product/dto';
+import { ProductCreateDto, ProductDto } from '../src/product/dto';
 
 describe('ProductController (e2e)', () => {
   let app: INestApplication<App>;
@@ -36,6 +36,7 @@ describe('ProductController (e2e)', () => {
       select: {
         id: true,
         alias: true,
+        order: true,
       },
     });
   });
@@ -53,10 +54,18 @@ describe('ProductController (e2e)', () => {
       .send(productCreateData);
 
     expect(response.status).toBe(201);
-    expect(response.body).toBeDefined();
-    expect(response.body).toHaveProperty('name', productCreateData.name);
-    expect(response.body).toHaveProperty('id');
-    console.dir(response.body, { depth: 10 });
+    const body = response.body as ProductDto;
+    expect(body).toBeDefined();
+    expect(body).toHaveProperty('name', productCreateData.name);
+    expect(body).toHaveProperty('id');
+    expect(body).toHaveProperty('note', productCreateData.note);
+    expect(body).toHaveProperty('brand', {
+      id: brandFixture.id,
+      name: brandFixture.name,
+    });
+    expect(body).toHaveProperty('dayParts');
+    expect(Array.isArray(body.dayParts)).toBeTruthy();
+    expect(body.dayParts).toEqual(expect.arrayContaining(dayParts));
     createdProduct = response.body as Product;
   });
 
@@ -68,6 +77,18 @@ describe('ProductController (e2e)', () => {
     expect(Array.isArray(response.body)).toBeTruthy();
     expect(response.body).toHaveLength(1);
     expect(response.body).toContainEqual(createdProduct);
+
+    const body = (response.body as ProductDto[])[0];
+    expect(body).toHaveProperty('name', createdProduct.name);
+    expect(body).toHaveProperty('id');
+    expect(body).toHaveProperty('note', createdProduct.note);
+    expect(body).toHaveProperty('brand', {
+      id: brandFixture.id,
+      name: brandFixture.name,
+    });
+    expect(body).toHaveProperty('dayParts');
+    expect(Array.isArray(body.dayParts)).toBeTruthy();
+    expect(body.dayParts).toEqual(expect.arrayContaining(dayParts));
   });
 
   it('get (GET)', async () => {
@@ -77,6 +98,17 @@ describe('ProductController (e2e)', () => {
     expect(response.status).toBe(200);
     expect(response.body).toBeDefined();
     expect(response.body).toEqual(createdProduct);
+    const body = response.body as ProductDto;
+    expect(body).toHaveProperty('name', createdProduct.name);
+    expect(body).toHaveProperty('id');
+    expect(body).toHaveProperty('note', createdProduct.note);
+    expect(body).toHaveProperty('brand', {
+      id: brandFixture.id,
+      name: brandFixture.name,
+    });
+    expect(body).toHaveProperty('dayParts');
+    expect(Array.isArray(body.dayParts)).toBeTruthy();
+    expect(body.dayParts).toEqual(expect.arrayContaining(dayParts));
   });
 
   it('delete (DELETE)', async () => {
@@ -87,7 +119,6 @@ describe('ProductController (e2e)', () => {
   });
 
   afterAll(async () => {
-    await prisma.dayPartsOnProducts.deleteMany();
     await prisma.product.deleteMany({});
     await prisma.brand.deleteMany({});
     await app.close();

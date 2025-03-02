@@ -14,7 +14,7 @@ model Product {
   note      String?
   createdAt DateTime             @default(now()) @db.Timestamp(6)
   updatedAt DateTime             @updatedAt @db.Timestamp(6)
-  dayParts  DayPartsOnProducts[]
+  dayParts  DayPart[]
   brand     Brand?               @relation(fields: [brandId], references: [id])
 }
 
@@ -24,7 +24,7 @@ model DayPart {
   order     Int                  @default(0)
   createdAt DateTime             @default(now()) @db.Timestamp(6)
   updatedAt DateTime             @updatedAt @db.Timestamp(6)
-  products  DayPartsOnProducts[]
+  products  Product[]
 }
 
 model Brand {
@@ -33,13 +33,4 @@ model Brand {
   createdAt DateTime  @default(now()) @db.Timestamp(6)
   updatedAt DateTime  @updatedAt @db.Timestamp(6)
   products  Product[]
-}
-
-model DayPartsOnProducts {
-  productId Int
-  dayPartId Int
-  dayPart   DayPart  @relation(fields: [dayPartId], references: [id])
-  product   Product  @relation(fields: [productId], references: [id])
-
-  @@id([dayPartId, productId])
 }

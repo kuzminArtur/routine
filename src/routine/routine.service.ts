@@ -9,17 +9,32 @@ export class RoutineService {
   async getRoutines(): Promise<DayPart[]> {
     return this.prisma.dayPart.findMany({
       include: {
-        products: true,
+        products: {
+          include: {
+            brand: true,
+          },
+          orderBy: {
+            id: 'asc',
+          },
+        },
       },
       where: {
         products: {
           some: {},
         },
       },
+      orderBy: {
+        order: 'asc',
+      },
     });
   }
 
   async getDayParts(where?: Prisma.DayPartWhereInput): Promise<DayPart[]> {
-    return this.prisma.dayPart.findMany({ where });
+    return this.prisma.dayPart.findMany({
+      where,
+      orderBy: {
+        order: 'asc',
+      },
+    });
   }
 }
